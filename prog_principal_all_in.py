@@ -1,4 +1,5 @@
 ﻿import pygame
+import pyautogui #library to know mouse position
 
 #variable globale
 couleurFond = [0 , 20 , 50]
@@ -28,6 +29,10 @@ while continuer == True:
                 continuer = False
         if event.type == pygame.QUIT :
                 continuer = False
+        if event.type == pygame.MOUSEBUTTONDOWN and (mouse.position[0] >= width/2 - 130 - width/6 >= width/2 - 130 - width/6 + 100) and (mouse.position >= 60 >= 60 + 30):
+            continuer = False
+
+
     #éléments du jeu
     ##trading area
     pygame.draw.rect(screen , couleurTest , (width*0.75 , 0 , width/4 , height))
