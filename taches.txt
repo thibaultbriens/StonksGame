@@ -1,8 +1,12 @@
  - home screen (avant de commencer la partie) => moyen
- - définir le montant de base du portefeuile => simple
+ - définir le montant de base du portefeuile => simple ===================> pour commencer aura valeur de base
  - structure de base (box vide)=> simple
  - trouver les valeurs des 5-10 dernières années des devises sous un format exploitable (.txt de pref) => moyen
  - ajouter les butons des devises => simple
  - ajouter TRADE BOX => simple
  - solution pour afficher les graphiques (en concordant avec la devise select.) => difficile
  - ajouter les trade ouvert/fermer position => moyen
+ 
+ 
+Fait le 15/11 : création de boutons et début de création d'input
+A faire pour après : création input - affichage des open trades dans la box correspondante - création de la fenetre d'accueile (menu)

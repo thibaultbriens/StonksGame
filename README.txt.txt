@@ -1,0 +1,1 @@
+Rentrer dans la variable 'width , height' les valeurs de votre écran
