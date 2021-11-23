@@ -9,6 +9,7 @@ couleurTest2 = [255 , 255 , 255]
 
 wallet = 5000
 yLogTexts = 30
+logTexts = ['test' , 'test2']
 
 #initialisation des modules
 mouse = Controller()
@@ -17,7 +18,7 @@ font = pygame.font.SysFont('didot.ttc', 54)
 font2 = pygame.font.SysFont('didot.ttc', 30)
 
 
-width , height = 1600 , 900 #indiquez le nobre de pixel de votre écran
+width , height = 1600 , 900
 
 screen = pygame.display.set_mode((width , height) , pygame.FULLSCREEN)
 
@@ -37,18 +38,40 @@ closeTradeText = font.render('CLOSE TRADE', True, couleurTest)
 
 '''fonction pour ajouter un nombre dans la liste logText
 dépendances : une valeur (string obligatoire) et une liste'''
-def ajoutLogText(nb , list) :
-    if len(list) < 6 :
-        list.append(nb)
-    else :
-        for i in range (len(list) - 2) :
-            list[i] = list[i + 1]
-        list[len(list) - 1] = nb
+def ajoutLogText(list , nb) :
+    for i in range (len(list) - 1 , 0 , -1) :
+        list[i] = list[i - 1]
+    list[0] = nb
 
+prixBTC = 100000
+
+#fonctions cliques sur un close trade
 def openTrade50() :
-    global wallet
+    global wallet , logTexts
     wallet -= 50
-    ajoutLogText(str(50) , logTexts)
+    ajoutLogText(logTexts , 'Achat 50$ - BTC/UDS (acheté à ' + str(prixBTC) + '$)')
+def openTrade100() :
+    global wallet , logTexts
+    wallet -= 100
+    ajoutLogText(logTexts , 'Achat 100$ - BTC/UDS (acheté à ' + str(prixBTC) + '$)')
+def openTrade1000() :
+    global wallet , logTexts
+    wallet -= 1000
+    ajoutLogText(logTexts , 'Achat 1000$ - BTC/UDS (acheté à ' + str(prixBTC) + '$)')
+
+#fonctions clique sur un close trade
+def closeTrade50() :
+    global wallet , logTexts
+    wallet += 50
+    ajoutLogText(logTexts , 'Vente 50$ - BTC/UDS (vendu à ' + str(prixBTC) + '$)')
+def closeTrade100() :
+    global wallet , logTexts
+    wallet += 100
+    ajoutLogText(logTexts , 'Vente 100$ - BTC/UDS (vendu à ' + str(prixBTC) + '$)')
+def closeTrade1000() :
+    global wallet , logTexts
+    wallet += 1000
+    ajoutLogText(logTexts , 'Vente 1000$ - BTC/UDS (vendu à ' + str(prixBTC) + '$)')
 
 def clicksPos() :
     global wallet
@@ -64,40 +87,36 @@ def clicksPos() :
         print('pressed 1 month time advancement')
 
     #cliques trade box
-    ##open trade
-    if (mouse.position[0] < width*0.80 + 255) and (mouse.position[0] > width*0.80) and (mouse.position[1] > 60) and (mouse.position[1] < 60+40) :
-        print('openned a trade')
-    ##close trade
-    if (mouse.position[0] < width*0.80 + 280) and (mouse.position[0] > width*0.80) and (mouse.position[1] < 120 + 40) and (mouse.position[1] > 120) :
-        print('closed a trade')
+    #open trades
     ##50$ opentrade
     if (mouse.position[0] < width*0.80 + 65) and (mouse.position[0] > width*0.80) and (mouse.position[1] < 300 + 40) and (mouse.position[1] > 300) :
         print('50$ pressed')
-        openTrade50
+        openTrade50()
     ##100$ opentrade
-    if (mouse.position[0] < width*0.85 + 65) and (mouse.position[0] > width*0.85) and (mouse.position[1] < 300 + 40) and (mouse.position[1] > 300) :
+    if (mouse.position[0] < width*0.85 + 90) and (mouse.position[0] > width*0.85) and (mouse.position[1] < 300 + 40) and (mouse.position[1] > 300) :
         print('100$ pressed')
-        wallet -= 100
+        openTrade100()
     ##1000$ opentrade
-    if (mouse.position[0] < width*0.916 + 65) and (mouse.position[0] > width*0.916) and (mouse.position[1] < 300 + 40) and (mouse.position[1] > 300) :
+    if (mouse.position[0] < width*0.916 + 110) and (mouse.position[0] > width*0.916) and (mouse.position[1] < 300 + 40) and (mouse.position[1] > 300) :
         print('1000$ pressed')
-        wallet -= 1000
+        openTrade1000()
+    #close trades
     ##50$ closetrade
     if (mouse.position[0] < width*0.80 + 65) and (mouse.position[0] > width*0.80) and (mouse.position[1] < 500 + 40) and (mouse.position[1] > 500) :
         print('50$ pressed')
-        wallet += 50 #(mettre la fonction de close trade)
+        closeTrade50() #(mettre la fonction de close trade)
     ##100$ closetrade
-    if (mouse.position[0] < width*0.85 + 65) and (mouse.position[0] > width*0.85) and (mouse.position[1] < 500 + 40) and (mouse.position[1] > 500) :
+    if (mouse.position[0] < width*0.85 + 90) and (mouse.position[0] > width*0.85) and (mouse.position[1] < 500 + 40) and (mouse.position[1] > 500) :
         print('100$ pressed')
-        wallet += 100 #(mettre la fonction de close trade)
+        closeTrade100() #(mettre la fonction de close trade)
     ##1000$ closetrade
-    if (mouse.position[0] < width*0.916 + 65) and (mouse.position[0] > width*0.916) and (mouse.position[1] < 500 + 40) and (mouse.position[1] > 500) :
+    if (mouse.position[0] < width*0.916 + 110) and (mouse.position[0] > width*0.916) and (mouse.position[1] < 500 + 40) and (mouse.position[1] > 500) :
         print('1000$ pressed')
-        wallet += 1000 #(mettre la fonction de close trade)
+        closeTrade1000() #(mettre la fonction de close trade)
 
 while continuer == True:
     walletText = font.render(str(wallet) + '$', True, couleurTest2)
-    logTexts = ['you dit it' , 'good']
+    
     #boucle our détecter les évènement dans pygame
     for event in pygame.event.get() :
         #si la croix est pressée

@@ -8,5 +8,4 @@
  - ajouter les trade ouvert/fermer position => moyen
  
  
-Fait le 15/11 : création de boutons et début de création d'input
-A faire pour après : création input - affichage des open trades dans la box correspondante - création de la fenetre d'accueile (menu)
+ - si j'y arrive mettre les open trades en vert et les close trades en rouge
