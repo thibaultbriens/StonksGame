@@ -11,6 +11,12 @@ wallet = 5000
 yLogTexts = 30
 logTexts = ['test' , 'test2']
 
+jour = 14
+mois = 'octobre'
+annee = 2018
+date = str(jour) + ' ' + mois +  ' ' + str(annee)
+prixBTC = 100000
+
 #initialisation des modules
 mouse = Controller()
 pygame.init()
@@ -39,39 +45,43 @@ closeTradeText = font.render('CLOSE TRADE', True, couleurTest)
 '''fonction pour ajouter un nombre dans la liste logText
 dépendances : une valeur (string obligatoire) et une liste'''
 def ajoutLogText(list , nb) :
-    for i in range (len(list) - 1 , 0 , -1) :
-        list[i] = list[i - 1]
-    list[0] = nb
-
-prixBTC = 100000
+    if len(list) < 6 :
+        list.append('') #on rajoute un élément a la liste
+        for i in range (len(list) - 1 , 0 , -1) :
+            list[i] = list[i - 1]
+        list[0] = nb
+    else :
+        for i in range (len(list) - 1 , 0 , -1) :
+            list[i] = list[i - 1]
+        list[0] = nb
 
 #fonctions cliques sur un close trade
 def openTrade50() :
     global wallet , logTexts
     wallet -= 50
-    ajoutLogText(logTexts , 'Achat 50$ - BTC/UDS (acheté à ' + str(prixBTC) + '$)')
+    ajoutLogText(logTexts , 'Achat 50$ - BTC/UDS (acheté à ' + str(prixBTC) + '$) - ' + date)
 def openTrade100() :
     global wallet , logTexts
     wallet -= 100
-    ajoutLogText(logTexts , 'Achat 100$ - BTC/UDS (acheté à ' + str(prixBTC) + '$)')
+    ajoutLogText(logTexts , 'Achat 100$ - BTC/UDS (acheté à ' + str(prixBTC) + '$) - ' + date)
 def openTrade1000() :
     global wallet , logTexts
     wallet -= 1000
-    ajoutLogText(logTexts , 'Achat 1000$ - BTC/UDS (acheté à ' + str(prixBTC) + '$)')
+    ajoutLogText(logTexts , 'Achat 1000$ - BTC/UDS (acheté à ' + str(prixBTC) + '$) - ' + date)
 
 #fonctions clique sur un close trade
 def closeTrade50() :
     global wallet , logTexts
     wallet += 50
-    ajoutLogText(logTexts , 'Vente 50$ - BTC/UDS (vendu à ' + str(prixBTC) + '$)')
+    ajoutLogText(logTexts , 'Vente 50$ - BTC/UDS (vendu à ' + str(prixBTC) + '$) - ' + date)
 def closeTrade100() :
     global wallet , logTexts
     wallet += 100
-    ajoutLogText(logTexts , 'Vente 100$ - BTC/UDS (vendu à ' + str(prixBTC) + '$)')
+    ajoutLogText(logTexts , 'Vente 100$ - BTC/UDS (vendu à ' + str(prixBTC) + '$) - ' + date)
 def closeTrade1000() :
     global wallet , logTexts
     wallet += 1000
-    ajoutLogText(logTexts , 'Vente 1000$ - BTC/UDS (vendu à ' + str(prixBTC) + '$)')
+    ajoutLogText(logTexts , 'Vente 1000$ - BTC/UDS (vendu à ' + str(prixBTC) + '$) - ' + date)
 
 def clicksPos() :
     global wallet
