@@ -1,21 +1,27 @@
-﻿import pygame
+import pygame
 from pygame.font import*
 from pynput.mouse import Controller #library to know mouse position
+from random import randint
 
 #variable globale
 couleurFond = [0 , 20 , 50]
 couleurTest = [0 , 0 , 0]
 couleurTest2 = [255 , 255 , 255]
+months = ['janvier' , 'février' , 'mars' , 'avril' , 'mai' , 'juin' , 'juillet' , 'août' , 'septembre' , 'octobre' , 'novembre' , 'décembre']
 
+#gestion wallet et log texts
 wallet = 5000
 yLogTexts = 30
-logTexts = ['test' , 'test2']
+logTexts = []
 
-jour = 14
-mois = 'octobre'
-annee = 2018
-date = str(jour) + ' ' + mois +  ' ' + str(annee)
-prixBTC = 100000
+#gestion de la date
+day = 11
+month = 'octobre'
+year = 2018
+
+#gestion graphique et prix currencies
+prixBTC = 56985
+monthPricesBTC = ['janvier' , 'février' , 'mars' , 'avril' , 'mai' , 'juin' , 'juillet' , 'août' , 'septembre' , 'octobre' , 'novembre' , 'décembre' , 'janvier' , 'février' , 'mars' , 'avril' , 'mai' , 'juin' , 'juillet' , 'août' , 'septembre' , 'octobre' , 'novembre' , 'décembre' , 'janvier' , 'février' , 'mars' , 'avril']
 
 #initialisation des modules
 mouse = Controller()
@@ -55,46 +61,99 @@ def ajoutLogText(list , nb) :
             list[i] = list[i - 1]
         list[0] = nb
 
+#ajouter une ou des valeurs dans monthPricesBTC
+#need une liste et une valeur à ajouter
+def addMonthPricesBTC(list , price) :
+    if len(list) < 29 :
+        list.append(price) #on rajoute un élément a la liste
+    else :
+        for i in range (len(list) - 1) :
+            list[i] = list[i - 1]
+        list.append(price)
+    print(list)
+    
+#fonction pour faire varier le prix du btc chaque jour
+#nedeed une valeur i =au nombre de jour avancé. Exemple : on clique sur + mois ; alors i = 30
+def variationPrixBTC(i) :
+    global prixBTC
+    addMonthPricesBTC(monthPricesBTC , prixBTC)
+    for j in range (i) :
+        prixBTC += randint(-100 , 200)
+        
+
 #fonctions cliques sur un close trade
 def openTrade50() :
-    global wallet , logTexts
+    global wallet , logTexts , day , month , year
     wallet -= 50
-    ajoutLogText(logTexts , 'Achat 50$ - BTC/UDS (acheté à ' + str(prixBTC) + '$) - ' + date)
+    ajoutLogText(logTexts , 'Achat 50$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 def openTrade100() :
-    global wallet , logTexts
+    global wallet , logTexts , day , month , year
     wallet -= 100
-    ajoutLogText(logTexts , 'Achat 100$ - BTC/UDS (acheté à ' + str(prixBTC) + '$) - ' + date)
+    ajoutLogText(logTexts , 'Achat 100$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 def openTrade1000() :
-    global wallet , logTexts
+    global wallet , logTexts, day , month , year
     wallet -= 1000
-    ajoutLogText(logTexts , 'Achat 1000$ - BTC/UDS (acheté à ' + str(prixBTC) + '$) - ' + date)
+    ajoutLogText(logTexts , 'Achat 1000$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 
 #fonctions clique sur un close trade
 def closeTrade50() :
-    global wallet , logTexts
+    global wallet , logTexts, day , month , year
     wallet += 50
-    ajoutLogText(logTexts , 'Vente 50$ - BTC/UDS (vendu à ' + str(prixBTC) + '$) - ' + date)
+    ajoutLogText(logTexts , 'Vente 50$ - BTC/USD (vendu à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 def closeTrade100() :
-    global wallet , logTexts
+    global wallet , logTexts, day , month , year
     wallet += 100
-    ajoutLogText(logTexts , 'Vente 100$ - BTC/UDS (vendu à ' + str(prixBTC) + '$) - ' + date)
+    ajoutLogText(logTexts , 'Vente 100$ - BTC/USD (vendu à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 def closeTrade1000() :
-    global wallet , logTexts
+    global wallet , logTexts, day , month , year
     wallet += 1000
-    ajoutLogText(logTexts , 'Vente 1000$ - BTC/UDS (vendu à ' + str(prixBTC) + '$) - ' + date)
+    ajoutLogText(logTexts , 'Vente 1000$ - BTC/USD (vendu à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
+    
+#fonctins pour avancer le temps
+def monthAdvance() :
+    global months , month , year , day
+    if month == 'décembre' :
+        year += 1
+        month = 'janvier'
+    else :
+        month = months[months.index(month) + 1] #on va chercher l'indice du mois actuel dans la liste des mois et on rajoute 1 indice pour avoir le mois d'apres
 
+def dayAdvance() :
+    global month , day , year
+    if month in ['janvier' , 'mars' , 'mai' , 'juillet' , 'août' , 'octobre' , 'décembre'] :
+        if day <= 30 :
+            day += 1
+        else :
+            monthAdvance()
+            day = 1
+    elif month == 'février' :
+        if day <= 27 :
+            day += 1
+        else :
+            monthAdvance()
+            day = 1
+    else :
+        if day <= 29 :
+            day += 1
+        else :
+            monthAdvance()
+            day = 1
+    variationPrixBTC(1)
+            
 def clicksPos() :
     global wallet
     #cliques avancement de temps
             ##détection clique sur '1 day advance'
     if (mouse.position[0] < width/2 - 130 - width/6 + 100) and (mouse.position[0] > width/2 - 130 - width/6) and (mouse.position[1] < 60 + 30) and (mouse.position[1] > 60) :
         print('pressed 1 day time advancement')
+        dayAdvance()
     ##détection clique sur '1 week advance'
     if (mouse.position[0] < width/2 - width/6 + 100) and (mouse.position[0] > width/2 - width/6) and (mouse.position[1] < 60 + 30) and (mouse.position[1] > 60) :
         print('pressed 1 week time advancement')
     ##détection clique sur '1 month advance'
     if (mouse.position[0] < width/2 + 130 - width/6 + 100) and (mouse.position[0] > width/2 + 130 - width/6) and (mouse.position[1] < 60 + 30) and (mouse.position[1] > 60) :
         print('pressed 1 month time advancement')
+        monthAdvance()
 
     #cliques trade box
     #open trades
@@ -125,7 +184,12 @@ def clicksPos() :
         closeTrade1000() #(mettre la fonction de close trade)
 
 while continuer == True:
+    dateText = font.render((str(day) + ' ' + month + ' ' + str(year)), True , couleurTest2)
+    dayAdvanceText = font2.render('+1 day' , True , couleurTest2)
+    weekAdvanceText = font2.render('+1 week' , True , couleurTest2)
+    monthAdvanceText = font2.render('+1 mois' , True , couleurTest2)
     walletText = font.render(str(wallet) + '$', True, couleurTest2)
+    prixBTCText = font.render((str(prixBTC) + ' USD/BTC'), True, couleurTest2)
     
     #boucle our détecter les évènement dans pygame
     for event in pygame.event.get() :
@@ -144,15 +208,23 @@ while continuer == True:
     pygame.draw.rect(screen , couleurTest , (width*0.75 , 0 , width/4 , height))
     ##wallet
     pygame.draw.rect(screen , couleurTest , (0 , 0 , 350 , 35))
+    screen.blit(walletText, (0 , 0))
+    #date
+    pygame.draw.rect(screen, couleurTest , (width/4 , 10-5 , 400 , 50))
+    screen.blit(dateText , (width/4 + 40 , 10))
     ##time advance
     ###1 day
     pygame.draw.rect(screen , couleurTest , (width/2 - 130 - width/6 , 60 , 100 , 30))
-    ###1 week
+    screen.blit(dayAdvanceText , (width/2 - 130 - width/6 + 5, 60 + 5))
+    '''###1 week
     pygame.draw.rect(screen , couleurTest , (width/2 - width/6, 60 , 100 , 30))
+    screen.blit(weekAdvanceText , (width/2 - width/6 + 5, 60 + 5))'''
     ###1 month
     pygame.draw.rect(screen , couleurTest , (width/2 + 130 - width/6, 60 , 100 , 30))
+    screen.blit(monthAdvanceText , (width/2 + 130 - width/6 + 5, 60 + 5))
     ##currency
-    pygame.draw.rect(screen , couleurTest , (20 , 110 , 100 , 40))
+    pygame.draw.rect(screen , couleurTest , (20 , 100 , 350 , 55))
+    screen.blit(prixBTCText, (30 , 110))
     ##graph
     pygame.draw.rect(screen , couleurTest , (20 , 170 , width*0.72 , height/1.8))
     ##trades log
@@ -189,9 +261,6 @@ while continuer == True:
     ####1000$
     pygame.draw.rect(screen , couleurTest2 , (width*0.916 , 500 , 110 , 40))
     screen.blit(milleDollarText, (width*0.916 , 500))
-
-    #affichage wallet
-    screen.blit(walletText, (0 , 0))
 
     #raffraichit le screen => INDISPENSABLE pour afficher quoque ce soit
     pygame.display.flip()
