@@ -1,4 +1,4 @@
-import pygame
+﻿import pygame
 from pygame.font import*
 from pynput.mouse import Controller #library to know mouse position
 from random import randint
@@ -68,17 +68,17 @@ def addMonthPricesBTC(list , price) :
         list.append(price) #on rajoute un élément a la liste
     else :
         for i in range (len(list) - 1) :
-            list[i] = list[i - 1]
-        list.append(price)
+            list[i] = list[i + 1]
+        list[len(list) - 1] = price
     print(list)
     
 #fonction pour faire varier le prix du btc chaque jour
 #nedeed une valeur i =au nombre de jour avancé. Exemple : on clique sur + mois ; alors i = 30
 def variationPrixBTC(i) :
     global prixBTC
-    addMonthPricesBTC(monthPricesBTC , prixBTC)
     for j in range (i) :
         prixBTC += randint(-100 , 200)
+        addMonthPricesBTC(monthPricesBTC , prixBTC)
         
 
 #fonctions cliques sur un close trade
