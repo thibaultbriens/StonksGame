@@ -20,7 +20,7 @@ month = 'octobre'
 year = 2018
 
 #gestion graphique et prix currencies
-prixBTC = 56985
+prixBTC = 50000
 monthPricesBTC = ['janvier' , 'février' , 'mars' , 'avril' , 'mai' , 'juin' , 'juillet' , 'août' , 'septembre' , 'octobre' , 'novembre' , 'décembre' , 'janvier' , 'février' , 'mars' , 'avril' , 'mai' , 'juin' , 'juillet' , 'août' , 'septembre' , 'octobre' , 'novembre' , 'décembre' , 'janvier' , 'février' , 'mars' , 'avril']
 
 #initialisation des modules
@@ -117,7 +117,6 @@ def monthAdvance() :
         month = 'janvier'
     else :
         month = months[months.index(month) + 1] #on va chercher l'indice du mois actuel dans la liste des mois et on rajoute 1 indice pour avoir le mois d'apres
-
 def dayAdvance() :
     global month , day , year
     if month in ['janvier' , 'mars' , 'mai' , 'juillet' , 'août' , 'octobre' , 'décembre'] :
@@ -183,6 +182,13 @@ def clicksPos() :
         print('1000$ pressed')
         closeTrade1000() #(mettre la fonction de close trade)
 
+#fonction pour le graphique
+def chart() :
+    
+
+
+#on charge une liste de 30 variations du prix du btc pour pouvoir fairele graphique des le début
+variationPrixBTC(30)
 while continuer == True:
     dateText = font.render((str(day) + ' ' + month + ' ' + str(year)), True , couleurTest2)
     dayAdvanceText = font2.render('+1 day' , True , couleurTest2)
@@ -201,7 +207,6 @@ while continuer == True:
                 continuer = False
         if event.type == pygame.MOUSEBUTTONDOWN :
             clicksPos()
-
 
     #éléments du jeu
     ##trading area
@@ -233,7 +238,6 @@ while continuer == True:
     for i in range (len(logTexts)) :
         screen.blit((font2.render(logTexts[i], True, couleurTest2)), (20 , 190 + yLogTexts*i + height/1.8 + 20))
 
-
     #tradingbox
     ##opentrade
     pygame.draw.rect(screen , couleurTest2 , (width*0.80 , 250 , 255 , 40))
@@ -264,6 +268,5 @@ while continuer == True:
 
     #raffraichit le screen => INDISPENSABLE pour afficher quoque ce soit
     pygame.display.flip()
-
 
 pygame.quit()
