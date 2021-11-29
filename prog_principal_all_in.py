@@ -11,6 +11,7 @@ months = ['janvier' , 'février' , 'mars' , 'avril' , 'mai' , 'juin' , 'juillet'
 
 #gestion wallet et log texts
 wallet = 5000
+BTCWallet = 0
 yLogTexts = 30
 logTexts = []
 
@@ -83,16 +84,22 @@ def variationPrixBTC(i) :
 
 #fonctions cliques sur un close trade
 def openTrade50() :
-    global wallet , logTexts , day , month , year
+    global wallet , logTexts , day , month , year , BTCWallet , prixBTC
     wallet -= 50
+    BTCWallet += (50/prixBTC)
+    BTCWallet = round(BTCWallet , 6) #arrondit à 5 chiffres
     ajoutLogText(logTexts , 'Achat 50$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 def openTrade100() :
-    global wallet , logTexts , day , month , year
+    global wallet , logTexts , day , month , year , BTCWallet , prixBTC
     wallet -= 100
+    BTCWallet += (100/prixBTC)
+    BTCWallet = round(BTCWallet , 5) #arrondit à 5 chiffres
     ajoutLogText(logTexts , 'Achat 100$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 def openTrade1000() :
-    global wallet , logTexts, day , month , year
+    global wallet , logTexts, day , month , year , BTCWallet , prixBTC
     wallet -= 1000
+    BTCWallet += (1000/prixBTC)
+    BTCWallet = round(BTCWallet , 5) #arrondit à 5 chiffres
     ajoutLogText(logTexts , 'Achat 1000$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 
 #fonctions clique sur un close trade
@@ -183,8 +190,7 @@ def clicksPos() :
         closeTrade1000() #(mettre la fonction de close trade)
 
 #fonction pour le graphique
-def chart() :
-    
+
 
 
 #on charge une liste de 30 variations du prix du btc pour pouvoir fairele graphique des le début
@@ -196,6 +202,7 @@ while continuer == True:
     monthAdvanceText = font2.render('+1 mois' , True , couleurTest2)
     walletText = font.render(str(wallet) + '$', True, couleurTest2)
     prixBTCText = font.render((str(prixBTC) + ' USD/BTC'), True, couleurTest2)
+    BTCWalletText = font2.render((str(BTCWallet) + ' BTC'), True, couleurTest2)
     
     #boucle our détecter les évènement dans pygame
     for event in pygame.event.get() :
@@ -212,8 +219,9 @@ while continuer == True:
     ##trading area
     pygame.draw.rect(screen , couleurTest , (width*0.75 , 0 , width/4 , height))
     ##wallet
-    pygame.draw.rect(screen , couleurTest , (0 , 0 , 350 , 35))
+    pygame.draw.rect(screen , couleurTest , (0 , 0 , 350 , 75))
     screen.blit(walletText, (0 , 0))
+    screen.blit(BTCWalletText, (0 , 50))
     #date
     pygame.draw.rect(screen, couleurTest , (width/4 , 10-5 , 400 , 50))
     screen.blit(dateText , (width/4 + 40 , 10))

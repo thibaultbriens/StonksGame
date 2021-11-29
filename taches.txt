@@ -1,8 +1,8 @@
 PRIORITE
- - fonction pour faire varier le prix en avançant le temps
+ - écrire les level completed dans un fichier txt
  - graphique du cours du btc
 
- - fenêtre avant lancement
+ - fenêtre avant lancement (possibilité de partie libre (écriture des infos dans un fichier txt quand fenetre se ferme) ou levels)
  - ajout des objectifs
 
 
