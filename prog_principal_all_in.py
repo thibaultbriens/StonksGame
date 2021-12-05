@@ -2,6 +2,7 @@
 from pygame.font import*
 from pynput.mouse import Controller #library to know mouse position
 from random import randint
+from tkinter import* #librairie pour les pop up
 
 #variable globale
 couleurFond = [0 , 20 , 50]
@@ -10,7 +11,7 @@ couleurTest2 = [255 , 255 , 255]
 months = ['janvier' , 'février' , 'mars' , 'avril' , 'mai' , 'juin' , 'juillet' , 'août' , 'septembre' , 'octobre' , 'novembre' , 'décembre']
 
 #gestion wallet et log texts
-wallet = 5000
+wallet = 100
 BTCWallet = 0
 yLogTexts = 30
 logTexts = []
@@ -27,19 +28,31 @@ monthPricesBTC = ['janvier' , 'février' , 'mars' , 'avril' , 'mai' , 'juin' , '
 #initialisation des modules
 mouse = Controller()
 pygame.init()
+'''#Créé la fenêtre pour les pop up
+win = Tk()
+win.geometry("300x100") #géométrie de la fenetre
+win.lift()
+win.attributes("-topmost", True) #définie la fenetre au premier plan'''
 font = pygame.font.SysFont('didot.ttc', 54)
 font2 = pygame.font.SysFont('didot.ttc', 30)
 
 
 width , height = 1600 , 900
 
-screen = pygame.display.set_mode((width , height) , pygame.FULLSCREEN)
+screen = pygame.display.set_mode((400 , 400))
 
 icone = pygame.image.load("stonks.jpg").convert_alpha() #peut utiliser '.convert_alpha()' si l'image choisie a arriere plan transparent
+icone2 = pygame.image.load("fond_noir.jpg")
 
 pygame.display.set_caption("Stonks Trading Simulation")
 pygame.display.set_icon(icone)
 screen.fill(couleurFond)
+
+'''def popUp(popUpText) :
+    #texte
+    Label(win, text= popUpText , font=('Helvetica 14 bold')).pack(pady=20)
+    #boutton pour fermer la pop-up
+    Button(win, text= "OK" , command=quit).pack()'''
 
 continuer = True #variable pur continuer le jeu ou non
 #textes (forcément apres le pygame.init()
@@ -48,6 +61,24 @@ centDollarText = font.render('100$', True, couleurTest)
 milleDollarText = font.render('1000$', True, couleurTest)
 openTradeText = font.render('OPEN TRADE', True, couleurTest)
 closeTradeText = font.render('CLOSE TRADE', True, couleurTest)
+
+#fonction principal pour le menu
+def menuScreen() :
+    global icone , continuer
+    while continuer == True:     
+    #boucle our détecter les évènement dans pygame
+        for event in pygame.event.get() :
+            #si la croix est pressée
+            if event.type == pygame.KEYDOWN :
+                if event.key == pygame.K_F12 :
+                    continuer = False
+                if event.key == pygame.K_SPACE :
+                    mainScreen()
+            if event.type == pygame.QUIT :
+                    continuer = False
+        screen.blit(icone , (-200 , -50))
+        pygame.display.flip()
+        
 
 '''fonction pour ajouter un nombre dans la liste logText
 dépendances : une valeur (string obligatoire) et une liste'''
@@ -85,36 +116,49 @@ def variationPrixBTC(i) :
 #fonctions cliques sur un close trade
 def openTrade50() :
     global wallet , logTexts , day , month , year , BTCWallet , prixBTC
-    wallet -= 50
-    BTCWallet += (50/prixBTC)
-    BTCWallet = round(BTCWallet , 6) #arrondit à 5 chiffres
-    ajoutLogText(logTexts , 'Achat 50$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
+    if wallet >= 50 :
+        wallet -= 50
+        BTCWallet += (50/prixBTC)
+        BTCWallet = round(BTCWallet , 5) #arrondit à 5 chiffres après la virgule
+        ajoutLogText(logTexts , 'Achat 50$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 def openTrade100() :
     global wallet , logTexts , day , month , year , BTCWallet , prixBTC
-    wallet -= 100
-    BTCWallet += (100/prixBTC)
-    BTCWallet = round(BTCWallet , 5) #arrondit à 5 chiffres
-    ajoutLogText(logTexts , 'Achat 100$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
+    if wallet >= 100 :
+        wallet -= 100
+        BTCWallet += (100/prixBTC)
+        BTCWallet = round(BTCWallet , 5) #arrondit à 5 chiffres après la virgule
+        ajoutLogText(logTexts , 'Achat 100$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
+
 def openTrade1000() :
     global wallet , logTexts, day , month , year , BTCWallet , prixBTC
-    wallet -= 1000
-    BTCWallet += (1000/prixBTC)
-    BTCWallet = round(BTCWallet , 5) #arrondit à 5 chiffres
-    ajoutLogText(logTexts , 'Achat 1000$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
+    if wallet >= 1000 :
+        wallet -= 1000
+        BTCWallet += (1000/prixBTC)
+        BTCWallet = round(BTCWallet , 5) #arrondit à 5 chiffres après la virgule
+        ajoutLogText(logTexts , 'Achat 1000$ - BTC/USD (acheté à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 
 #fonctions clique sur un close trade
 def closeTrade50() :
-    global wallet , logTexts, day , month , year
-    wallet += 50
-    ajoutLogText(logTexts , 'Vente 50$ - BTC/USD (vendu à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
+    global wallet , logTexts, day , month , year , BTCWallet , prixBTC
+    if BTCWallet >= 50/prixBTC :
+        wallet += 50
+        BTCWallet -= 50/prixBTC
+        BTCWallet = round(BTCWallet , 5) #arrondit à 5 chiffres après la virgule
+        ajoutLogText(logTexts , 'Vente 50$ - BTC/USD (vendu à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 def closeTrade100() :
-    global wallet , logTexts, day , month , year
-    wallet += 100
-    ajoutLogText(logTexts , 'Vente 100$ - BTC/USD (vendu à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
+    global wallet , logTexts, day , month , year , BTCWallet , prixBTC
+    if BTCWallet >= 100/prixBTC :
+        wallet += 100
+        BTCWallet -= 100/prixBTC
+        BTCWallet = round(BTCWallet , 5) #arrondit à 5 chiffres après la virgule
+        ajoutLogText(logTexts , 'Vente 100$ - BTC/USD (vendu à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
 def closeTrade1000() :
-    global wallet , logTexts, day , month , year
-    wallet += 1000
-    ajoutLogText(logTexts , 'Vente 1000$ - BTC/USD (vendu à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
+    global wallet , logTexts, day , month , year , BTCWallet , prixBTC
+    if BTCWallet >= 1000/prixBTC :
+        wallet += 1000
+        BTCWallet -= 1000/prixBTC
+        BTCWallet = round(BTCWallet , 5) #arrondit à 5 chiffres après la virgule
+        ajoutLogText(logTexts , 'Vente 1000$ - BTC/USD (vendu à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
     
 #fonctins pour avancer le temps
 def monthAdvance() :
@@ -124,27 +168,30 @@ def monthAdvance() :
         month = 'janvier'
     else :
         month = months[months.index(month) + 1] #on va chercher l'indice du mois actuel dans la liste des mois et on rajoute 1 indice pour avoir le mois d'apres
+    variationPrixBTC(30)
 def dayAdvance() :
     global month , day , year
     if month in ['janvier' , 'mars' , 'mai' , 'juillet' , 'août' , 'octobre' , 'décembre'] :
         if day <= 30 :
             day += 1
+            variationPrixBTC(1)
         else :
             monthAdvance()
             day = 1
     elif month == 'février' :
         if day <= 27 :
             day += 1
+            variationPrixBTC(1)
         else :
             monthAdvance()
             day = 1
     else :
         if day <= 29 :
             day += 1
+            variationPrixBTC(1)
         else :
             monthAdvance()
             day = 1
-    variationPrixBTC(1)
             
 def clicksPos() :
     global wallet
@@ -189,92 +236,101 @@ def clicksPos() :
         print('1000$ pressed')
         closeTrade1000() #(mettre la fonction de close trade)
 
-#fonction pour le graphique
+#fonction de l'écran du jeu
+def mainScreen() :
+    global screen , continuer , icone
+    screen = pygame.display.set_mode((width , height) , pygame.FULLSCREEN)
+    pygame.display.set_caption("Stonks Trading Simulation")
+    pygame.display.set_icon(icone)
+    screen.fill(couleurFond)
+    #on charge une liste de 30 variations du prix du btc pour pouvoir fairele graphique des le début
+    variationPrixBTC(30)
+    while continuer == True:
+        dateText = font.render((str(day) + ' ' + month + ' ' + str(year)), True , couleurTest2)
+        dayAdvanceText = font2.render('+1 day' , True , couleurTest2)
+        weekAdvanceText = font2.render('+1 week' , True , couleurTest2)
+        monthAdvanceText = font2.render('+1 mois' , True , couleurTest2)
+        walletText = font.render(str(wallet) + '$', True, couleurTest2)
+        prixBTCText = font.render((str(prixBTC) + ' USD/BTC'), True, couleurTest2)
+        BTCWalletText = font2.render((str(BTCWallet) + ' BTC (= ' + str(round(BTCWallet*prixBTC , 2)) + ' $)'), True, couleurTest2)
+        
+        #boucle our détecter les évènement dans pygame
+        for event in pygame.event.get() :
+            #si la croix est pressée
+            if event.type == pygame.KEYDOWN :
+                if event.key == pygame.K_F12 :
+                    continuer = False
+                    icone = icone2
+            if event.type == pygame.QUIT :
+                    continuer = False
+                    icone = icone2
+            if event.type == pygame.MOUSEBUTTONDOWN :
+                clicksPos()
 
+        #éléments du jeu
+        ##trading area
+        pygame.draw.rect(screen , couleurTest , (width*0.75 , 0 , width/4 , height))
+        ##wallet
+        pygame.draw.rect(screen , couleurTest , (0 , 0 , 350 , 75))
+        screen.blit(walletText, (0 , 0))
+        screen.blit(BTCWalletText, (0 , 50))
+        #date
+        pygame.draw.rect(screen, couleurTest , (width/4 , 10-5 , 400 , 50))
+        screen.blit(dateText , (width/4 + 40 , 10))
+        ##time advance
+        ###1 day
+        pygame.draw.rect(screen , couleurTest , (width/2 - 130 - width/6 , 60 , 100 , 30))
+        screen.blit(dayAdvanceText , (width/2 - 130 - width/6 + 5, 60 + 5))
+        '''###1 week
+        pygame.draw.rect(screen , couleurTest , (width/2 - width/6, 60 , 100 , 30))
+        screen.blit(weekAdvanceText , (width/2 - width/6 + 5, 60 + 5))'''
+        ###1 month
+        pygame.draw.rect(screen , couleurTest , (width/2 + 130 - width/6, 60 , 100 , 30))
+        screen.blit(monthAdvanceText , (width/2 + 130 - width/6 + 5, 60 + 5))
+        ##currency
+        pygame.draw.rect(screen , couleurTest , (20 , 100 , 350 , 55))
+        screen.blit(prixBTCText, (30 , 110))
+        ##graph
+        pygame.draw.rect(screen , couleurTest , (20 , 170 , width*0.72 , height/1.8))
+        ##trades log
+        pygame.draw.rect(screen , couleurTest , (0 , 170 + height/1.8 + 20 , width - width/4 , height/4))
+        #affichage des log text
+        for i in range (len(logTexts)) :
+            screen.blit((font2.render(logTexts[i], True, couleurTest2)), (20 , 190 + yLogTexts*i + height/1.8 + 20))
 
+        #tradingbox
+        ##opentrade
+        pygame.draw.rect(screen , couleurTest2 , (width*0.80 , 250 , 255 , 40))
+        screen.blit(openTradeText, (width*0.80 , 250))
+        ###montants de trade
+        ####50$
+        pygame.draw.rect(screen , couleurTest2 , (width*0.80 , 300 , 65 , 40))
+        screen.blit(cinquanteDollarText, (width*0.80 , 300))
+        ####100$
+        pygame.draw.rect(screen , couleurTest2 , (width*0.85 , 300 , 90 , 40))
+        screen.blit(centDollarText, (width*0.85 , 300))
+        ####1000$
+        pygame.draw.rect(screen , couleurTest2 , (width*0.916 , 300 , 110 , 40))
+        screen.blit(milleDollarText, (width*0.916 , 300))
 
-#on charge une liste de 30 variations du prix du btc pour pouvoir fairele graphique des le début
-variationPrixBTC(30)
-while continuer == True:
-    dateText = font.render((str(day) + ' ' + month + ' ' + str(year)), True , couleurTest2)
-    dayAdvanceText = font2.render('+1 day' , True , couleurTest2)
-    weekAdvanceText = font2.render('+1 week' , True , couleurTest2)
-    monthAdvanceText = font2.render('+1 mois' , True , couleurTest2)
-    walletText = font.render(str(wallet) + '$', True, couleurTest2)
-    prixBTCText = font.render((str(prixBTC) + ' USD/BTC'), True, couleurTest2)
-    BTCWalletText = font2.render((str(BTCWallet) + ' BTC'), True, couleurTest2)
-    
-    #boucle our détecter les évènement dans pygame
-    for event in pygame.event.get() :
-        #si la croix est pressée
-        if event.type == pygame.KEYDOWN :
-            if event.key == pygame.K_F12 :
-                continuer = False
-        if event.type == pygame.QUIT :
-                continuer = False
-        if event.type == pygame.MOUSEBUTTONDOWN :
-            clicksPos()
+        ##closetrade    
+        pygame.draw.rect(screen , couleurTest2 , (width*0.80 , 450 , 280 , 40))
+        screen.blit(closeTradeText, (width*0.80 , 450))
+        ####50$
+        pygame.draw.rect(screen , couleurTest2 , (width*0.80 , 500 , 65 , 40))
+        screen.blit(cinquanteDollarText, (width*0.80 , 500))
+        ####100$
+        pygame.draw.rect(screen , couleurTest2 , (width*0.85 , 500 , 90 , 40))
+        screen.blit(centDollarText, (width*0.85 , 500))
+        ####1000$
+        pygame.draw.rect(screen , couleurTest2 , (width*0.916 , 500 , 110 , 40))
+        screen.blit(milleDollarText, (width*0.916 , 500))
 
-    #éléments du jeu
-    ##trading area
-    pygame.draw.rect(screen , couleurTest , (width*0.75 , 0 , width/4 , height))
-    ##wallet
-    pygame.draw.rect(screen , couleurTest , (0 , 0 , 350 , 75))
-    screen.blit(walletText, (0 , 0))
-    screen.blit(BTCWalletText, (0 , 50))
-    #date
-    pygame.draw.rect(screen, couleurTest , (width/4 , 10-5 , 400 , 50))
-    screen.blit(dateText , (width/4 + 40 , 10))
-    ##time advance
-    ###1 day
-    pygame.draw.rect(screen , couleurTest , (width/2 - 130 - width/6 , 60 , 100 , 30))
-    screen.blit(dayAdvanceText , (width/2 - 130 - width/6 + 5, 60 + 5))
-    '''###1 week
-    pygame.draw.rect(screen , couleurTest , (width/2 - width/6, 60 , 100 , 30))
-    screen.blit(weekAdvanceText , (width/2 - width/6 + 5, 60 + 5))'''
-    ###1 month
-    pygame.draw.rect(screen , couleurTest , (width/2 + 130 - width/6, 60 , 100 , 30))
-    screen.blit(monthAdvanceText , (width/2 + 130 - width/6 + 5, 60 + 5))
-    ##currency
-    pygame.draw.rect(screen , couleurTest , (20 , 100 , 350 , 55))
-    screen.blit(prixBTCText, (30 , 110))
-    ##graph
-    pygame.draw.rect(screen , couleurTest , (20 , 170 , width*0.72 , height/1.8))
-    ##trades log
-    pygame.draw.rect(screen , couleurTest , (0 , 170 + height/1.8 + 20 , width - width/4 , height/4))
-    #affichage des log text
-    for i in range (len(logTexts)) :
-        screen.blit((font2.render(logTexts[i], True, couleurTest2)), (20 , 190 + yLogTexts*i + height/1.8 + 20))
+        #raffraichit le screen => INDISPENSABLE pour afficher quoque ce soit
+        pygame.display.flip()
 
-    #tradingbox
-    ##opentrade
-    pygame.draw.rect(screen , couleurTest2 , (width*0.80 , 250 , 255 , 40))
-    screen.blit(openTradeText, (width*0.80 , 250))
-    ###montants de trade
-    ####50$
-    pygame.draw.rect(screen , couleurTest2 , (width*0.80 , 300 , 65 , 40))
-    screen.blit(cinquanteDollarText, (width*0.80 , 300))
-    ####100$
-    pygame.draw.rect(screen , couleurTest2 , (width*0.85 , 300 , 90 , 40))
-    screen.blit(centDollarText, (width*0.85 , 300))
-    ####1000$
-    pygame.draw.rect(screen , couleurTest2 , (width*0.916 , 300 , 110 , 40))
-    screen.blit(milleDollarText, (width*0.916 , 300))
+icone = pygame.image.load("stonks.jpg").convert_alpha()
+menuScreen()
 
-    ##closetrade
-    pygame.draw.rect(screen , couleurTest2 , (width*0.80 , 450 , 280 , 40))
-    screen.blit(closeTradeText, (width*0.80 , 450))
-    ####50$
-    pygame.draw.rect(screen , couleurTest2 , (width*0.80 , 500 , 65 , 40))
-    screen.blit(cinquanteDollarText, (width*0.80 , 500))
-    ####100$
-    pygame.draw.rect(screen , couleurTest2 , (width*0.85 , 500 , 90 , 40))
-    screen.blit(centDollarText, (width*0.85 , 500))
-    ####1000$
-    pygame.draw.rect(screen , couleurTest2 , (width*0.916 , 500 , 110 , 40))
-    screen.blit(milleDollarText, (width*0.916 , 500))
-
-    #raffraichit le screen => INDISPENSABLE pour afficher quoque ce soit
-    pygame.display.flip()
-
+'''win.mainloop()'''
 pygame.quit()

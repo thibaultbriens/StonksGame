@@ -1,38 +1,49 @@
 import pygame
-import pygame
-from pygame.font import*
-from pynput.mouse import Controller #library to know mouse position
 
-#variable globale
-couleurFond = [0 , 20 , 50]
-couleurTest = [0 , 0 , 0]
-couleurTest2 = [255 , 255 , 255]
 
-#initialisation des modules
-mouse = Controller()
-
-BLUE = (40, 120, 230)
-GREEN = (40, 230, 120)
-
+ 
 pygame.init()
-screen = pygame.display.set_mode((1600, 900))
+ 
+width = 400
+height = 400
 
-font = pygame.font.SysFont('Comic Sans MS,Arial', 24)
+screen = pygame.display.set_mode((width , height))
 
-def chart() :
-	
+stonksImg = pygame.image.load("stonks.jpg").convert_alpha()
 
 continuer = True
 
-while continuer:
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN :
-            if event.key == pygame.K_F12 :
-                continuer = False
+def second(continuer) :
+    global screen
+    screen = pygame.display.set_mode((1600 , 900) , pygame.FULLSCREEN)
+    while continuer == True:
+    #boucle our détecter les évènement dans pygame
+        for event in pygame.event.get() :
+            #si la croix est pressée
+            if event.type == pygame.KEYDOWN :
+                if event.key == pygame.K_F12 :
+                    continuer = False
+            elif event.type == pygame.QUIT :
+                    continuer = False
+        pygame.display.flip()
 
+def first(continuer) :
+    while continuer == True:
+    #boucle our détecter les évènement dans pygame
+        for event in pygame.event.get() :
+            #si la croix est pressée
+            if event.type == pygame.KEYDOWN :
+                if event.key == pygame.K_F12 :
+                    continuer = False
+                if event.key == pygame.K_SPACE :
+                    second(continuer)
+            if event.type == pygame.QUIT :
+                    continuer = False
+        
+        screen.blit(stonksImg , (-200 , -50))
 
-    pygame.display.flip()
-
-##print("La valeur de l'utilisateur convertie en entier est:", int(user_input_value))
+        pygame.display.flip()
+ 
+first(continuer)
 
 pygame.quit()
