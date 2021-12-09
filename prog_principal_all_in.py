@@ -11,7 +11,7 @@ couleurTest2 = [255 , 255 , 255]
 months = ['janvier' , 'février' , 'mars' , 'avril' , 'mai' , 'juin' , 'juillet' , 'août' , 'septembre' , 'octobre' , 'novembre' , 'décembre']
 
 #gestion wallet et log texts
-wallet = 100
+wallet = 10000
 BTCWallet = 0
 yLogTexts = 30
 logTexts = []
@@ -35,11 +35,12 @@ win.lift()
 win.attributes("-topmost", True) #définie la fenetre au premier plan'''
 font = pygame.font.SysFont('didot.ttc', 54)
 font2 = pygame.font.SysFont('didot.ttc', 30)
+font3 = pygame.font.SysFont('didot.ttc', 22)
 
 
 width , height = 1600 , 900
 
-screen = pygame.display.set_mode((400 , 400))
+screen = pygame.display.set_mode((600 , 600))
 
 icone = pygame.image.load("stonks.jpg").convert_alpha() #peut utiliser '.convert_alpha()' si l'image choisie a arriere plan transparent
 icone2 = pygame.image.load("fond_noir.jpg")
@@ -64,21 +65,30 @@ closeTradeText = font.render('CLOSE TRADE', True, couleurTest)
 
 #fonction principal pour le menu
 def menuScreen() :
-    global icone , continuer
-    while continuer == True:     
+    global icone , continuer , wallet
+    while continuer == True:
     #boucle our détecter les évènement dans pygame
         for event in pygame.event.get() :
             #si la croix est pressée
             if event.type == pygame.KEYDOWN :
                 if event.key == pygame.K_F12 :
                     continuer = False
+                #recommencer à la partie en cours
                 if event.key == pygame.K_SPACE :
-                    mainScreen()
+                    mainScreenFreeGame()
+                #recommencer une partie
+                if event.key == pygame.K_TAB :
+                    walletTxtWrite = open('wallet.txt' , 'w') #cela enleve tous ce qui est écrit dans le fichier
+                    mainScreenFreeGame()
             if event.type == pygame.QUIT :
                     continuer = False
-        screen.blit(icone , (-200 , -50))
+
+        screen.blit(font2.render('Cliquez TAB pour recommencer une nouvelle partie' , True , couleurTest2) , (10 , 10))
+        screen.blit(font3.render('Attention ! Cela détruira la partie en cours' , True , couleurTest2) , (10 , 30))
+        screen.blit(font2.render('Cliquez sur ESPACE pour continuer la partie en cours' , True , couleurTest2) , (10 , 100))
+
         pygame.display.flip()
-        
+
 
 '''fonction pour ajouter un nombre dans la liste logText
 dépendances : une valeur (string obligatoire) et une liste'''
@@ -103,7 +113,7 @@ def addMonthPricesBTC(list , price) :
             list[i] = list[i + 1]
         list[len(list) - 1] = price
     print(list)
-    
+
 #fonction pour faire varier le prix du btc chaque jour
 #nedeed une valeur i =au nombre de jour avancé. Exemple : on clique sur + mois ; alors i = 30
 def variationPrixBTC(i) :
@@ -111,7 +121,7 @@ def variationPrixBTC(i) :
     for j in range (i) :
         prixBTC += randint(-100 , 200)
         addMonthPricesBTC(monthPricesBTC , prixBTC)
-        
+
 
 #fonctions cliques sur un close trade
 def openTrade50() :
@@ -159,7 +169,7 @@ def closeTrade1000() :
         BTCWallet -= 1000/prixBTC
         BTCWallet = round(BTCWallet , 5) #arrondit à 5 chiffres après la virgule
         ajoutLogText(logTexts , 'Vente 1000$ - BTC/USD (vendu à ' + str(prixBTC) + '$) - ' + str(day) + ' ' + month + ' ' + str(year))
-    
+
 #fonctins pour avancer le temps
 def monthAdvance() :
     global months , month , year , day
@@ -192,7 +202,7 @@ def dayAdvance() :
         else :
             monthAdvance()
             day = 1
-            
+
 def clicksPos() :
     global wallet
     #cliques avancement de temps
@@ -237,12 +247,17 @@ def clicksPos() :
         closeTrade1000() #(mettre la fonction de close trade)
 
 #fonction de l'écran du jeu
-def mainScreen() :
-    global screen , continuer , icone
+def mainScreenFreeGame() :
+    global screen , continuer , icone , wallet
     screen = pygame.display.set_mode((width , height) , pygame.FULLSCREEN)
     pygame.display.set_caption("Stonks Trading Simulation")
     pygame.display.set_icon(icone)
     screen.fill(couleurFond)
+    walletTxtRead = open('wallet.txt' , 'r') #ouverture du fichier dans lequel est stocké les valeurs du wallet
+    try : #on essaie de chercher une valeur dans le fichier
+        wallet = int(walletTxtRead.read())
+    except : #si on trouve pas on reset le montant du wallet
+        wallet = 10000
     #on charge une liste de 30 variations du prix du btc pour pouvoir fairele graphique des le début
     variationPrixBTC(30)
     while continuer == True:
@@ -253,15 +268,14 @@ def mainScreen() :
         walletText = font.render(str(wallet) + '$', True, couleurTest2)
         prixBTCText = font.render((str(prixBTC) + ' USD/BTC'), True, couleurTest2)
         BTCWalletText = font2.render((str(BTCWallet) + ' BTC (= ' + str(round(BTCWallet*prixBTC , 2)) + ' $)'), True, couleurTest2)
-        
+
         #boucle our détecter les évènement dans pygame
         for event in pygame.event.get() :
             #si la croix est pressée
             if event.type == pygame.KEYDOWN :
                 if event.key == pygame.K_F12 :
-                    continuer = False
-                    icone = icone2
-            if event.type == pygame.QUIT :
+                    walletTxtWrite = open('wallet.txt' , 'w')
+                    walletTxtWrite.write(str(wallet))
                     continuer = False
                     icone = icone2
             if event.type == pygame.MOUSEBUTTONDOWN :
@@ -313,7 +327,7 @@ def mainScreen() :
         pygame.draw.rect(screen , couleurTest2 , (width*0.916 , 300 , 110 , 40))
         screen.blit(milleDollarText, (width*0.916 , 300))
 
-        ##closetrade    
+        ##closetrade
         pygame.draw.rect(screen , couleurTest2 , (width*0.80 , 450 , 280 , 40))
         screen.blit(closeTradeText, (width*0.80 , 450))
         ####50$
