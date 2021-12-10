@@ -10,3 +10,8 @@ PRIORITE
 OPTIONS
  - fare des tendances sur la fonction variationPrixBTC (genre entre 2017 et 2019 tendances haussaières donc randint (-50 , 400) et 2019 2020 tendances baissières donc randint(-400 , 50))
  - si j'y arrive mettre les open trades en vert et les close trades en rouge
+ 
+ 
+ 
+Faire visuel pour que ca soit plus intuitif
+Faire le truc des documents textes pour la date et le prix du btc
