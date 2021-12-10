@@ -79,6 +79,7 @@ def menuScreen() :
                 #recommencer une partie
                 if event.key == pygame.K_TAB :
                     walletTxtWrite = open('wallet.txt' , 'w') #cela enleve tous ce qui est écrit dans le fichier
+                    walletBTCTxtWrite = open('walletbtc.txt' , 'w') #cela enleve tous ce qui est écrit dans le fichier
                     mainScreenFreeGame()
             if event.type == pygame.QUIT :
                     continuer = False
@@ -248,16 +249,22 @@ def clicksPos() :
 
 #fonction de l'écran du jeu
 def mainScreenFreeGame() :
-    global screen , continuer , icone , wallet
+    global screen , continuer , icone , wallet , BTCWallet
     screen = pygame.display.set_mode((width , height) , pygame.FULLSCREEN)
     pygame.display.set_caption("Stonks Trading Simulation")
     pygame.display.set_icon(icone)
     screen.fill(couleurFond)
     walletTxtRead = open('wallet.txt' , 'r') #ouverture du fichier dans lequel est stocké les valeurs du wallet
+    walletBTCTxtRead = open('walletbtc.txt' , 'r') #ouverture du fichier dans lequel est stocké les valeurs du walletBTC
     try : #on essaie de chercher une valeur dans le fichier
         wallet = int(walletTxtRead.read())
     except : #si on trouve pas on reset le montant du wallet
         wallet = 10000
+    try :
+        BTCWallet = float(walletBTCTxtRead.read()) #ATTENTION c'est un float et non un int !!
+    except :
+        BTCWallet = 0
+
     #on charge une liste de 30 variations du prix du btc pour pouvoir fairele graphique des le début
     variationPrixBTC(30)
     while continuer == True:
@@ -276,6 +283,8 @@ def mainScreenFreeGame() :
                 if event.key == pygame.K_F12 :
                     walletTxtWrite = open('wallet.txt' , 'w')
                     walletTxtWrite.write(str(wallet))
+                    walletBTCTxtWrite = open('walletbtc.txt' , 'w')
+                    walletBTCTxtWrite.write(str(BTCWallet)) #on multiplie le résultat car quand on lis le fichier il ne lis pas les chiffres à virgules
                     continuer = False
                     icone = icone2
             if event.type == pygame.MOUSEBUTTONDOWN :
