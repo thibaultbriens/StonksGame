@@ -1,49 +1,38 @@
 import pygame
+from random import randint
 
+prixBTC = 50000
+monthPricesBTC = []
 
- 
 pygame.init()
- 
-width = 400
-height = 400
 
-screen = pygame.display.set_mode((width , height))
+screen = pygame.display.set_mode((1600 , 900) , pygame.FULLSCREEN)
+screen.fill((0 , 0 , 0))
 
-stonksImg = pygame.image.load("stonks.jpg").convert_alpha()
+def addMonthPricesBTC(list , price) :
+    if len(list) < 29 :
+        list.append(price) #on rajoute un élément a la liste
+    else :
+        for i in range (len(list) - 1) :
+            list[i] = list[i + 1]
+        list[len(list) - 1] = price
+    print(list)
+
+def variationPrixBTC(i) :
+    global prixBTC
+    for j in range (i) :
+        prixBTC += randint(-100 , 200)
+        addMonthPricesBTC(monthPricesBTC , prixBTC)
+
+variationPrixBTC(30)
 
 continuer = True
 
-def second(continuer) :
-    global screen
-    screen = pygame.display.set_mode((1600 , 900) , pygame.FULLSCREEN)
-    while continuer == True:
-    #boucle our détecter les évènement dans pygame
-        for event in pygame.event.get() :
+while continuer :
+    for event in pygame.event.get() :
             #si la croix est pressée
             if event.type == pygame.KEYDOWN :
                 if event.key == pygame.K_F12 :
                     continuer = False
-            elif event.type == pygame.QUIT :
-                    continuer = False
-        pygame.display.flip()
-
-def first(continuer) :
-    while continuer == True:
-    #boucle our détecter les évènement dans pygame
-        for event in pygame.event.get() :
-            #si la croix est pressée
-            if event.type == pygame.KEYDOWN :
-                if event.key == pygame.K_F12 :
-                    continuer = False
-                if event.key == pygame.K_SPACE :
-                    second(continuer)
-            if event.type == pygame.QUIT :
-                    continuer = False
-        
-        screen.blit(stonksImg , (-200 , -50))
-
-        pygame.display.flip()
- 
-first(continuer)
 
 pygame.quit()
