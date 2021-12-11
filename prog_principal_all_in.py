@@ -17,9 +17,9 @@ yLogTexts = 30
 logTexts = []
 
 #gestion de la date
-day = 11
-month = 'octobre'
-year = 2018
+day = 1
+month = 'janvier'
+year = 2021
 
 #gestion graphique et prix currencies
 prixBTC = 50000
@@ -78,8 +78,12 @@ def menuScreen() :
                     mainScreenFreeGame()
                 #recommencer une partie
                 if event.key == pygame.K_TAB :
-                    walletTxtWrite = open('wallet.txt' , 'w') #cela enleve tous ce qui est écrit dans le fichier
-                    walletBTCTxtWrite = open('walletbtc.txt' , 'w') #cela enleve tous ce qui est écrit dans le fichier
+                    open('wallet.txt' , 'w') #cela enleve tous ce qui est écrit dans le fichier
+                    open('walletbtc.txt' , 'w') #cela enleve tous ce qui est écrit dans le fichier
+                    open('prixbtc.txt' , 'w')
+                    open('jour.txt' , 'w')
+                    open('mois.txt' , 'w')
+                    open('annee.txt' , 'w')
                     mainScreenFreeGame()
             if event.type == pygame.QUIT :
                     continuer = False
@@ -249,13 +253,17 @@ def clicksPos() :
 
 #fonction de l'écran du jeu
 def mainScreenFreeGame() :
-    global screen , continuer , icone , wallet , BTCWallet
+    global screen , continuer , icone , wallet , BTCWallet , prixBTC , day , month , year
     screen = pygame.display.set_mode((width , height) , pygame.FULLSCREEN)
     pygame.display.set_caption("Stonks Trading Simulation")
     pygame.display.set_icon(icone)
     screen.fill(couleurFond)
     walletTxtRead = open('wallet.txt' , 'r') #ouverture du fichier dans lequel est stocké les valeurs du wallet
     walletBTCTxtRead = open('walletbtc.txt' , 'r') #ouverture du fichier dans lequel est stocké les valeurs du walletBTC
+    prixBTCTxtRead = open('prixbtc.txt' , 'r')
+    jourTxtRead = open('jour.txt' , 'r')
+    moisTxtRead = open('mois.txt' , 'r')
+    anneeTxtRead = open('annee.txt' , 'r')
     try : #on essaie de chercher une valeur dans le fichier
         wallet = int(walletTxtRead.read())
     except : #si on trouve pas on reset le montant du wallet
@@ -264,13 +272,27 @@ def mainScreenFreeGame() :
         BTCWallet = float(walletBTCTxtRead.read()) #ATTENTION c'est un float et non un int !!
     except :
         BTCWallet = 0
+    try :
+        prixBTC = int(prixBTCTxtRead.read())
+    except :
+        variationPrixBTC(30) #on charge une liste de 30 variations du prix du btc pour pouvoir fairele graphique des le début
+    try :
+        day = int(jourTxtRead.read()) 
+    except :
+        day = 1
+    try :
+        month = months[int(moisTxtRead.read())] #fonctionnement sous forme d'index de la liste de tous les mois car méthode de base ne marchait pas
+    except :
+        month = 'janvier'
+    try :
+        year = int(anneeTxtRead.read())
+    except :
+        year = 2020
 
-    #on charge une liste de 30 variations du prix du btc pour pouvoir fairele graphique des le début
-    variationPrixBTC(30)
     while continuer == True:
         dateText = font.render((str(day) + ' ' + month + ' ' + str(year)), True , couleurTest2)
         dayAdvanceText = font2.render('+1 day' , True , couleurTest2)
-        weekAdvanceText = font2.render('+1 week' , True , couleurTest2)
+        '''weekAdvanceText = font2.render('+1 week' , True , couleurTest2)'''
         monthAdvanceText = font2.render('+1 mois' , True , couleurTest2)
         walletText = font.render(str(wallet) + '$', True, couleurTest2)
         prixBTCText = font.render((str(prixBTC) + ' USD/BTC'), True, couleurTest2)
@@ -285,6 +307,14 @@ def mainScreenFreeGame() :
                     walletTxtWrite.write(str(wallet))
                     walletBTCTxtWrite = open('walletbtc.txt' , 'w')
                     walletBTCTxtWrite.write(str(BTCWallet)) #on multiplie le résultat car quand on lis le fichier il ne lis pas les chiffres à virgules
+                    prixBTCTxtWrite = open('prixbtc.txt' , 'w')
+                    prixBTCTxtWrite.write(str(prixBTC))
+                    jourTxtWrite = open('jour.txt' , 'w')
+                    jourTxtWrite.write(str(day))
+                    moisTxtWrite = open('mois.txt' , 'w')
+                    moisTxtWrite.write(str(months.index(month))) #on ajoute l'index du mois dans le fichier
+                    anneeTxtWrite = open('annee.txt' , 'w')
+                    anneeTxtWrite.write(str(year))
                     continuer = False
                     icone = icone2
             if event.type == pygame.MOUSEBUTTONDOWN :
@@ -352,8 +382,22 @@ def mainScreenFreeGame() :
         #raffraichit le screen => INDISPENSABLE pour afficher quoque ce soit
         pygame.display.flip()
 
+        '''walletTxtRead.close()
+        walletBTCTxtRead.close()
+        jourTxtRead.close()
+        moisTxtRead.close()
+        anneeTxtRead.close()
+
+        walletTxtWrite.close()
+        walletBTCTxtWrite.close()
+        jourTxtWrite.close()
+        moisTxtWrite.close()
+        anneeTxtWrite.close()'''
+
+
 icone = pygame.image.load("stonks.jpg").convert_alpha()
 menuScreen()
 
 '''win.mainloop()'''
 pygame.quit()
+
