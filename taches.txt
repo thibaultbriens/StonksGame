@@ -15,3 +15,8 @@ OPTIONS
  
 Faire visuel pour que ca soit plus intuitif
 Faire le truc des documents textes pour la date et le prix du btc
+
+
+17-12 :
+ - graphique 
+ - interface intuitive (bouton surtout)

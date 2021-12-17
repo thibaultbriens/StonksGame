@@ -277,7 +277,7 @@ def mainScreenFreeGame() :
     except :
         variationPrixBTC(30) #on charge une liste de 30 variations du prix du btc pour pouvoir fairele graphique des le début
     try :
-        day = int(jourTxtRead.read()) 
+        day = int(jourTxtRead.read())
     except :
         day = 1
     try :
@@ -400,4 +400,3 @@ menuScreen()
 
 '''win.mainloop()'''
 pygame.quit()
-
