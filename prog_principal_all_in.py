@@ -84,6 +84,7 @@ def menuScreen() :
                     open('jour.txt' , 'w')
                     open('mois.txt' , 'w')
                     open('annee.txt' , 'w')
+                    open('logtexts.txt' , 'w')
                     mainScreenFreeGame()
             if event.type == pygame.QUIT :
                     continuer = False
@@ -253,7 +254,7 @@ def clicksPos() :
 
 #fonction de l'écran du jeu
 def mainScreenFreeGame() :
-    global screen , continuer , icone , wallet , BTCWallet , prixBTC , day , month , year
+    global screen , continuer , icone , wallet , BTCWallet , prixBTC , day , month , year , logTexts
     screen = pygame.display.set_mode((width , height) , pygame.FULLSCREEN)
     pygame.display.set_caption("Stonks Trading Simulation")
     pygame.display.set_icon(icone)
@@ -264,30 +265,46 @@ def mainScreenFreeGame() :
     jourTxtRead = open('jour.txt' , 'r')
     moisTxtRead = open('mois.txt' , 'r')
     anneeTxtRead = open('annee.txt' , 'r')
+    logTextsTxtRead = open('logtexts.txt' , 'r')
+    #the wallet
     try : #on essaie de chercher une valeur dans le fichier
         wallet = int(walletTxtRead.read())
     except : #si on trouve pas on reset le montant du wallet
         wallet = 10000
+    #the BTC wallet
     try :
         BTCWallet = float(walletBTCTxtRead.read()) #ATTENTION c'est un float et non un int !!
     except :
         BTCWallet = 0
+    #the BTC price
     try :
         prixBTC = int(prixBTCTxtRead.read())
     except :
         variationPrixBTC(30) #on charge une liste de 30 variations du prix du btc pour pouvoir fairele graphique des le début
+    #the day
     try :
         day = int(jourTxtRead.read())
     except :
         day = 1
+    #the month
     try :
         month = months[int(moisTxtRead.read())] #fonctionnement sous forme d'index de la liste de tous les mois car méthode de base ne marchait pas
     except :
         month = 'janvier'
+    #the year
     try :
         year = int(anneeTxtRead.read())
     except :
         year = 2020
+    #the log texts
+    try:
+        for element in logTextsTxtRead:
+            # remove linebreak which is the last character of the string
+            currentElement = element[:-1]
+            # add item to the list
+            logTexts.append(currentElement)
+    except:
+        logTexts = []
 
     while continuer == True:
         dateText = font.render((str(day) + ' ' + month + ' ' + str(year)), True , couleurTest2)
@@ -315,6 +332,9 @@ def mainScreenFreeGame() :
                     moisTxtWrite.write(str(months.index(month))) #on ajoute l'index du mois dans le fichier
                     anneeTxtWrite = open('annee.txt' , 'w')
                     anneeTxtWrite.write(str(year))
+                    logTextsTxtWrite = open('logtexts.txt' , 'w')
+                    for element in logTexts:
+                        logTextsTxtWrite.write(str(element) + "\n")
                     continuer = False
                     icone = icone2
             if event.type == pygame.MOUSEBUTTONDOWN :
