@@ -23,7 +23,7 @@ year = 2021
 
 #gestion graphique et prix currencies
 prixBTC = 50000
-monthPricesBTC = ['janvier' , 'février' , 'mars' , 'avril' , 'mai' , 'juin' , 'juillet' , 'août' , 'septembre' , 'octobre' , 'novembre' , 'décembre' , 'janvier' , 'février' , 'mars' , 'avril' , 'mai' , 'juin' , 'juillet' , 'août' , 'septembre' , 'octobre' , 'novembre' , 'décembre' , 'janvier' , 'février' , 'mars' , 'avril']
+monthPricesBTC = []
 
 #initialisation des modules
 mouse = Controller()
@@ -78,13 +78,15 @@ def menuScreen() :
                     mainScreenFreeGame()
                 #recommencer une partie
                 if event.key == pygame.K_TAB :
-                    open('wallet.txt' , 'w') #cela enleve tous ce qui est écrit dans le fichier
-                    open('walletbtc.txt' , 'w') #cela enleve tous ce qui est écrit dans le fichier
+                    #on enleve tous ce qui est écrit dans les fichiers txt
+                    open('wallet.txt' , 'w') 
+                    open('walletbtc.txt' , 'w') 
                     open('prixbtc.txt' , 'w')
                     open('jour.txt' , 'w')
                     open('mois.txt' , 'w')
                     open('annee.txt' , 'w')
                     open('logtexts.txt' , 'w')
+                    open('monthpricesbtc.txt' , 'w')
                     mainScreenFreeGame()
             if event.type == pygame.QUIT :
                     continuer = False
@@ -254,7 +256,7 @@ def clicksPos() :
 
 #fonction de l'écran du jeu
 def mainScreenFreeGame() :
-    global screen , continuer , icone , wallet , BTCWallet , prixBTC , day , month , year , logTexts
+    global screen , continuer , icone , wallet , BTCWallet , prixBTC , day , month , year , logTexts , monthPricesBTC
     screen = pygame.display.set_mode((width , height) , pygame.FULLSCREEN)
     pygame.display.set_caption("Stonks Trading Simulation")
     pygame.display.set_icon(icone)
@@ -266,6 +268,7 @@ def mainScreenFreeGame() :
     moisTxtRead = open('mois.txt' , 'r')
     anneeTxtRead = open('annee.txt' , 'r')
     logTextsTxtRead = open('logtexts.txt' , 'r')
+    monthBTCTxtRead = open('monthpricesbtc.txt' , 'r')
     #the wallet
     try : #on essaie de chercher une valeur dans le fichier
         wallet = int(walletTxtRead.read())
@@ -296,7 +299,7 @@ def mainScreenFreeGame() :
         year = int(anneeTxtRead.read())
     except :
         year = 2020
-    #the log texts
+    #the log texts list
     try:
         for element in logTextsTxtRead:
             # remove linebreak which is the last character of the string
@@ -305,6 +308,15 @@ def mainScreenFreeGame() :
             logTexts.append(currentElement)
     except:
         logTexts = []
+    #the monthBTCPrices list
+    try:
+        for element in monthBTCTxtRead:
+            # remove linebreak which is the last character of the string
+            currentElement = element[:-1]
+            # add item to the list
+            monthPricesBTC.append(currentElement)
+    except:
+        monthPricesBTC = []
 
     while continuer == True:
         dateText = font.render((str(day) + ' ' + month + ' ' + str(year)), True , couleurTest2)
@@ -335,6 +347,9 @@ def mainScreenFreeGame() :
                     logTextsTxtWrite = open('logtexts.txt' , 'w')
                     for element in logTexts:
                         logTextsTxtWrite.write(str(element) + "\n")
+                    monthBTCTxtWrite = open('monthpricesbtc.txt' , 'w')
+                    for element in monthPricesBTC:
+                        monthBTCTxtWrite.write(str(element) + "\n")
                     continuer = False
                     icone = icone2
             if event.type == pygame.MOUSEBUTTONDOWN :
